@@ -1,0 +1,43 @@
+# Maintainer: Joshua Rogers <Joshua@Joshua.Hu>
+pkgname=ffmpeg
+pkgver=6.1.1
+pkgrel=0
+pkgdesc="Alpine package for downloading and installing a minimal ffmpeg for v4l2/raw video"
+url="https://ffmpeg.org/"
+arch="all"
+license="GPL-2.0-or-later AND LGPL-2.1-or-later"
+makedepends="v4l-utils-dev linux-headers gcc musl-dev nasm make"
+depends="v4l-utils-libs libjpeg-turbo pkgconfig"
+source="https://ffmpeg.org/releases/ffmpeg-$pkgver.tar.xz"
+options="!check"
+
+build() {
+	case "$CARCH" in
+	x86) local asm="--disable-asm" ;;
+	esac
+
+	./configure \
+		--prefix=/usr \
+		--optflags="-O3" \
+		--disable-everything \
+		--enable-decoder=rawvideo \
+		--enable-demuxer=rawvideo \
+		--enable-libv4l2 \
+		--enable-indev=v4l2 \
+		--enable-muxer=matroska \
+		--enable-encoder=rawvideo \
+		--enable-protocol=pipe \
+		--enable-filter=scale \
+		--optflags="-O3" \
+		$asm
+
+	make DESTDIR="$pkgdir"
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="
+fca3f8635f29182e3ae0fe843a8a53614e4b47e22c11508df3ff7cdbafbb4b5ee0d82d9b3332871f7c1032033b1cad2f67557d7c5f7f7d85e2adadca122965d5  ffmpeg-6.1.1.tar.xz
+"
