@@ -1,0 +1,12 @@
+diff --git a/fthd_drv.c b/fthd_drv.c
+index 458f582..25ae22c 100644
+--- a/fthd_drv.c
++++ b/fthd_drv.c
+@@ -542,6 +542,7 @@ static struct pci_driver fthd_pci_driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.probe = fthd_pci_probe,
+ 	.remove = fthd_pci_remove,
++	.shutdown = fthd_pci_remove,
+ 	.id_table = fthd_pci_id_table,
+ #ifdef CONFIG_PM
+ 	.suspend = fthd_pci_suspend,
