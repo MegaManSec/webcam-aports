@@ -18,6 +18,7 @@ build() {
 
 	./configure \
 		--prefix=/usr \
+		--disable-doc \
 		--optflags="-O3" \
 		--disable-everything \
 		--enable-decoder=rawvideo \
