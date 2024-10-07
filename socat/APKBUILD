@@ -53,7 +53,6 @@ _options="--srcdir=$_srcdir
 	--disable-socks4a
 	--disable-socks5
 	--disable-proxy
-	--disable-exec
 	--disable-system
 	--disable-pty
 	--disable-fs
