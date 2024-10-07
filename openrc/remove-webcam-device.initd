@@ -1,0 +1,33 @@
+#!/sbin/openrc-run
+
+description="Explicitly removes webcam devices."
+
+depend() {
+        before firewall
+        after logger
+}
+
+find_pci_webcam() {
+        local device
+        for device in /sys/bus/pci/devices/*/video4linux/video*/device; do
+                if [ -e "$device"/remove" ]; then
+                        echo "${device}"
+                fi
+        done
+}
+
+start() {
+        :
+}
+
+stop() {
+        ebegin "Triggering remove for PCI webcam devices"
+        eindent
+        for device in $(find_pci_webcam); do
+                veinfo "Processing $device"
+                echo 1 > "$device"/remove
+        done
+        eoutdent
+
+        eend $?
+}

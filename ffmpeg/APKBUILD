@@ -21,6 +21,7 @@ build() {
 		--disable-doc \
 		--optflags="-O3" \
 		--disable-everything \
+		--disable-ffprobe \
 		--enable-decoder=rawvideo \
 		--enable-demuxer=rawvideo \
 		--enable-libv4l2 \

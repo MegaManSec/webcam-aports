@@ -7,20 +7,18 @@ pkgdesc="Kernel module for Mac FaceTimeHD cameras"
 url="https://github.com/patjak/facetimehd"
 arch="noarch"
 license="GPL-2.0-only"
-makedepends="linux-lts-dev xz facetimehd-firmware"
+makedepends="linux-lts-dev xz"
 depends="linux-lts"
 install=
 source="$pkgname-$pkgver.tar.gz::https://github.com/patjak/facetimehd/archive/refs/tags/$pkgver.tar.gz
         0001-remove-device-on-shutdown.patch"
 builddir="$srcdir/facetimehd-$pkgver"
-options="!check"  # sources only
-_kver=
-_kbase=
+options="!check !strip"
+_kver=$(cd /usr/src/ && find . -mindepth 1 -maxdepth 1 -type d -name '*-lts' | sed 's!./linux-headers-!!')
+_kbase="/lib/modules/${_kver}"
 _srcdir="$builddir"
 
 build() {
-	_kver=$(cd /usr/src/ && find . -mindepth 1 -maxdepth 1 -type d -name '*-lts' | sed 's!./linux-headers-!!')
-	_kbase="/lib/modules/${_kver}"
 	make -C "$_srcdir" KVER="$_kver"
 }
 
