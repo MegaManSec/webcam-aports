@@ -1,0 +1,45 @@
+# Maintainer: Joshua Rogers <Joshua@Joshua.Hu>
+pkgname=facetimehd-calibration
+pkgver=1.0.0
+pkgrel=0
+UNRAR_VERSION=7.0.1
+url="https://github.com/patjak/facetimehd/wiki/Extracting-the-sensor-calibration-files"
+pkgdesc="Alpine package for downloading and installing facetimehd calibration .dat files"
+arch="noarch"
+source="bootcamp5.1.5769.zip::https://download.info.apple.com/Mac_OS_X/031-30890-20150812-ea191174-4130-11e5-a125-930911ba098f/bootcamp5.1.5769.zip
+unrarsrc-$UNRAR_VERSION.tar.gz::https://www.rarlab.com/rar/unrarsrc-$UNRAR_VERSION.tar.gz
+"
+license="GPL-2.0-only"
+makedepends="p7zip facetimehd-src facetimehd-firmware"
+
+build() {
+	tar xf "unrarsrc-$UNRAR_VERSION.tar.gz"
+	cd unrar/
+	make -j`nproc`
+	cd ../
+	7z -y x bootcamp5.1.5769.zip
+	cd BootCamp/Drivers/Apple/ || return 1
+	../../../unrar/unrar -y x AppleCamera64.exe
+	dd bs=1 skip=1663920 count=33060 if=AppleCamera.sys of=9112_01XX.dat
+	dd bs=1 skip=1644880 count=19040 if=AppleCamera.sys of=1771_01XX.dat
+	dd bs=1 skip=1606800 count=19040 if=AppleCamera.sys of=1871_01XX.dat
+	dd bs=1 skip=1625840 count=19040 if=AppleCamera.sys of=1874_01XX.dat
+}
+
+check() {
+	for file in 1771_01XX.dat 1871_01XX.dat 1874_01XX.dat 9112_01XX.dat; do
+		[ -e "$file" ] || return 1
+	done
+}
+
+package() {
+	install -Dm644 "src/BootCamp/Drivers/Apple/1771_01XX.dat" "$pkgdir/lib/firmware/facetimehd/1771_01XX.dat"
+	install -Dm644 "src/BootCamp/Drivers/Apple/1871_01XX.dat" "$pkgdir/lib/firmware/facetimehd/1871_01XX.dat"
+	install -Dm644 "src/BootCamp/Drivers/Apple/1874_01XX.dat" "$pkgdir/lib/firmware/facetimehd/1874_01XX.dat"
+	install -Dm644 "src/BootCamp/Drivers/Apple/9112_01XX.dat" "$pkgdir/lib/firmware/facetimehd/9112_01XX.dat"
+}
+
+sha512sums="
+96ecc8e55a74de85fbb3026a05eb49ad4dbc8a48f0aafebd3b27a6a47ce53df1179b8442ce77320f643df7e67075d8430e197dc43258b0a6ba47f58cfa947132  bootcamp5.1.5769.zip
+3f78c0a001a642dba328605fd9478e04703b9b1181f0d9c7d645d106ec5eb643aba5889a96e63460c3c0c9ef070510a7ca688509f50ba23dc528bac40238d7c4  unrarsrc-7.0.1.tar.gz
+"
