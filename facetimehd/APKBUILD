@@ -1,7 +1,7 @@
 # Maintainer: Joshua Rogers <Joshua@Joshua.Hu>
 pkgname=facetimehd-src
 _modname=facetimehd
-pkgver=0.6.8.2
+pkgver=0.7.2
 pkgrel=0
 pkgdesc="Kernel module for Mac FaceTimeHD cameras"
 url="https://github.com/patjak/facetimehd"
@@ -10,8 +10,7 @@ license="GPL-2.0-only"
 makedepends="linux-lts-dev xz"
 depends="linux-lts"
 install=
-source="$pkgname-$pkgver.tar.gz::https://github.com/patjak/facetimehd/archive/refs/tags/$pkgver.tar.gz
-        0001-remove-device-on-shutdown.patch"
+source="$pkgname-$pkgver.tar.gz::https://github.com/patjak/facetimehd/archive/refs/tags/$pkgver.tar.gz"
 builddir="$srcdir/facetimehd-$pkgver"
 options="!check !strip"
 _kver=$(cd /usr/src/ && find . -mindepth 1 -maxdepth 1 -type d -name '*-lts' | sed 's!./linux-headers-!!')
@@ -19,7 +18,7 @@ _kbase="/lib/modules/${_kver}"
 _srcdir="$builddir"
 
 build() {
-	make -C "$_srcdir" KVER="$_kver"
+	make -C "$_srcdir" KDIR="$_kbase/build"
 }
 
 package() {
@@ -29,6 +28,5 @@ package() {
 }
 
 sha512sums="
-1b8fd6f72f58203978c3b5007e4789362891fe87e31c98582ab8323cd6c5bfc5947c5d7c228c6ba7c8e138c119196c3551098d4f8d4af9592782580bcee30745  facetimehd-src-0.6.8.2.tar.gz
-684ac87d730610959b23031bda7779efce9a14ad3e74a71f5a518fc30a57080be6d8432f7f959c1b6a45e890302efc48202bf3717a11379416bbec48b6bdb537  0001-remove-device-on-shutdown.patch
+24118dd9b4fb64e6bbd0da8455098919f115b5c4af6b2b3f81f4c41333c9a8c99181d778fadf7f1dac4c555d7683f66dc777fb9d6312818e879e8d426798a7f8  facetimehd-src-0.7.2.tar.gz
 "
